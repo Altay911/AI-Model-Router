@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Budget Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; color: white; font-family: ui-sans-serif, system-ui; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-8">
+    <header class="text-center mt-12 mb-16">
+        <h1 class="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600 mb-4">AI Budget Gateway</h1>
+        <p class="text-slate-400 text-lg">Intelligent routing between Expert and Economy LLMs</p>
+    </header>
+
+    <main class="w-full max-w-3xl space-y-8">
+        <div class="glass p-8 rounded-3xl shadow-2xl">
+            <textarea id="userInput" rows="4" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter your complex or simple request..."></textarea>
+            <button onclick="sendRequest()" id="btn" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all flex justify-center items-center gap-3">
+                <span>Route & Process</span>
+                <div id="loader" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </button>
+        </div>
+
+        <div id="results" class="hidden space-y-6 animate-in fade-in duration-500">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-5 rounded-2xl text-center"><p class="text-xs text-slate-400 uppercase tracking-widest">Selected Model</p><p id="modelTag" class="text-xl font-bold mt-1"></p></div>
+                <div class="glass p-5 rounded-2xl text-center"><p class="text-xs text-slate-400 uppercase tracking-widest">Est. Cost</p><p id="costTag" class="text-xl font-bold mt-1"></p></div>
+            </div>
+            <div id="aiBox" class="glass p-8 rounded-3xl border-l-4">
+                <p class="text-xs text-slate-400 font-bold uppercase mb-4">AI Response</p>
+                <div id="aiOutput" class="text-slate-200 leading-relaxed text-lg whitespace-pre-wrap"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function sendRequest() {
+            const prompt = document.getElementById('userInput').value;
+            const btn = document.getElementById('btn');
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('results');
+
+            if(!prompt) return;
+            btn.disabled = true; loader.classList.remove('hidden');
+
+            try {
+                // Pointing to your new engine/views logic
+                const res = await fetch(`/api/process/?prompt=${encodeURIComponent(prompt)}`);
+                const data = await res.json();
+
+                results.classList.remove('hidden');
+                document.getElementById('aiOutput').innerText = data.ai_response;
+                document.getElementById('modelTag').innerText = data.routed_to;
+                document.getElementById('costTag').innerText = data.estimated_cost;
+
+                // Dynamic Styling
+                const aiBox = document.getElementById('aiBox');
+                const modelTag = document.getElementById('modelTag');
+                if(data.is_complex) {
+                    aiBox.className = "glass p-8 rounded-3xl border-l-4 border-purple-500 shadow-purple-500/10 shadow-xl";
+                    modelTag.className = "text-xl font-bold mt-1 text-purple-400";
+                } else {
+                    aiBox.className = "glass p-8 rounded-3xl border-l-4 border-emerald-500 shadow-emerald-500/10 shadow-xl";
+                    modelTag.className = "text-xl font-bold mt-1 text-emerald-400";
+                }
+            } catch (e) { alert("Error connecting to engine"); }
+            finally { btn.disabled = false; loader.classList.add('hidden'); }
+        }
+    </script>
+</body>
+</html>
