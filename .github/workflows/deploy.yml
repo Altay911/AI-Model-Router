@@ -1,0 +1,33 @@
+name: Deploy AI Router to AWS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            # If the folder doesn't exist, clone it. Otherwise, pull updates.
+            if [ ! -d "~/ai-model-router" ]; then
+              git clone https://github.com/${{ github.repository }} ~/ai-model-router
+            fi
+            cd ~/ai-model-router
+            git pull origin main
+            
+            # Create the .env file on the fly using GitHub Secrets
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
+            
+            # Restart the project
+            sudo docker-compose down
+            sudo docker-compose up --build -d
