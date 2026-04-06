@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from engine import views  # Import your new engine app views
+from engine import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
