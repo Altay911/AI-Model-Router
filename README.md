@@ -1,6 +1,6 @@
 ![Project Preview](preview.png)
 
-![Project Preview](preview.png)
+![Project Preview](preview2.png)
 
 # 🚀 AI Model Router & Smart Budget Gateway
 
