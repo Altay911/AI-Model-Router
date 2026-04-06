@@ -1,3 +1,17 @@
+from django.http import JsonResponse
+from django.shortcuts import render
+import openai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+def home_view(request):
+    # This renders the beautiful UI we are about to create
+    return render(request, 'engine/index.html')
+
 def process_prompt(request):
     user_prompt = request.GET.get('prompt', '').strip()
     if not user_prompt:
