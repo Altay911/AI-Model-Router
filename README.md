@@ -7,7 +7,6 @@ A production-ready Django application that intelligently routes user prompts to 
 ---
 
 ### 🌐 [Live Web Demo](http://3.235.251.39) 
-*(Note: Replace the IP above with your actual AWS IP if it changed)*
 
 ---
 
