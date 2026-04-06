@@ -1,5 +1,7 @@
 ![Project Preview](preview.png)
 
+![Project Preview](preview.png)
+
 # 🚀 AI Model Router & Smart Budget Gateway
 
 A production-ready Django application that intelligently routes user prompts to different LLM models (GPT-4o vs. GPT-4o-Mini) based on query complexity to optimize API costs by up to 90%.
